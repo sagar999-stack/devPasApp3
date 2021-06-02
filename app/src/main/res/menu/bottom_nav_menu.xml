@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" android:background="@color/surma">
+
+    <item
+        android:id="@+id/navigation_orders"
+        android:background="@color/white"
+        android:icon="@drawable/order"
+        android:title="@string/orders" />
+
+    <item
+        android:id="@+id/navigation_reservations"
+        android:background="@color/white"
+        android:icon="@drawable/reservations"
+        android:title="@string/reservations" />
+
+    <item
+        android:id="@+id/navigation_settings"
+        android:background="@color/white"
+        android:icon="@drawable/setting"
+        android:title="@string/settings" />
+
+</menu>

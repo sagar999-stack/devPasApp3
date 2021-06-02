@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="offWhite">#F2F3F7</color>
+    <color name="surma">#272331</color>
+    <color name="pink">#E91E63</color>
+    <color name="orange">#EF473A</color>
+    <color name="teal_700">#B8C7CE</color>
+    <color name="firoza">#222D32</color>
+    <color name="firoza2">#00BCD4</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="gray">#BCC0C1</color>
+    <color name="yellow">#FFAA00</color>
+    <color name="badami">#908E93</color>
+    <color name="nightSkyBlue">#272331</color>
+    <color name="darkGreen">#238874</color>
+</resources>

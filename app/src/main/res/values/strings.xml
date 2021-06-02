@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name"> </string>
+    <string name="title_orders">Today\'s Orders</string>
+    <string name="title_reservations">Today\'s Reservation</string>
+    <string name="title_settings">Settings</string>
+    <string name="settings">Settings</string>
+    <string name="reservations">Reservations</string>
+    <string name="orders">Orders</string>
+
+    <!--settings string-->
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Plese input the printer\'s IP Addr.</string>
+    <string name="inputIp">Plese input the printer\'s IP Addr.</string>
+    <string name="inPrinterIp">192.168.1.100</string>
+    <string name="conTest">connect test</string>
+    <string name="printf">Print</string>
+    <string name="inputData">Welcome to use the impact and thermal printer manufactured by professional POS receipt printer company!</string>
+    <string name="log">Log...</string>
+    <string name="OpenCash">OpenCash</string>
+    <string name="CutPaper">CutPaper</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="connect">Connect</string>
+    <string name="enter_port">Enter Port</string>
+    <string name="enter_port_number">Enter Port Number</string>
+    <string name="_9100">9100</string>
+    <string name="forgot_password">FORGOT PASSWORD?</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="remember_me">Remember me</string>
+
+
+    <!--settings string end-->
+</resources>

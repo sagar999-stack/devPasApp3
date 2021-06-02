@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.settings.SettingsFragment">
+
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context=".MainActivity" >
+
+
+        <EditText
+            android:id="@+id/printerIp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/dax"
+            android:hint="@string/inputIp"
+            android:inputType="text"
+            android:text="@string/inPrinterIp"
+            android:textSize="24sp" />
+
+        <!--        <Button-->
+<!--            android:enabled="false"-->
+<!--            android:id="@+id/printf"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignLeft="@id/conTest"-->
+<!--            android:layout_below="@id/conTest"-->
+<!--            android:layout_alignRight="@id/conTest"-->
+<!--            android:text="@string/printf"/>-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/printfData"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignLeft="@id/printerIp"-->
+<!--            android:layout_below="@id/printerIp"-->
+<!--            android:layout_toLeftOf="@id/conTest"-->
+<!--            android:hint="@string/inputData"-->
+<!--            android:inputType="textMultiLine"-->
+<!--            />-->
+
+        <EditText
+            android:id="@+id/printerPort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/printerIp"
+
+            android:fontFamily="@font/dax"
+            android:hint="@string/enter_port_number"
+            android:inputType="number"
+            android:text="@string/_9100"
+            android:textSize="24sp" />
+
+        <LinearLayout
+            android:id="@+id/buttonRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/printerPort"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/conTest"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="1dp"
+                android:layout_weight="1"
+
+
+                android:fontFamily="@font/dax"
+                android:text="@string/connect"
+                android:textSize="24sp"
+                app:backgroundTint="@color/firoza2"
+                app:cornerRadius="0px" />
+
+            <Button
+                android:id="@+id/disConTest"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="1dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/dax"
+                android:text="@string/disconnect"
+                android:textSize="24sp"
+                app:backgroundTint="@color/pink"
+                app:cornerRadius="0px" />
+        </LinearLayout>
+
+
+<!--        <TextView-->
+<!--            android:id="@+id/textXPrinter"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_alignRight="@id/printf"-->
+<!--            android:text="posPrinter(C)-2015"-->
+<!--            android:background="#AAAAAA"/>-->
+<!--        <TextView-->
+<!--            android:id="@+id/fetcheddata"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_alignRight="@id/printf"-->
+
+<!--            android:background="#AAAAAA"/>-->
+
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/audioSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/buttonRow"
+            android:checked="false"
+            android:fontFamily="@font/dax"
+
+            android:text="Audio Notification  "
+            android:textOff="OFF"
+
+            android:textOn="ON"
+
+            android:textSize="24sp"
+            android:thumb="@drawable/thumb"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:track="@drawable/track" />
+
+        <Button
+            android:id="@+id/buttonLogOut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/audioSwitch"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/dax"
+            android:text="Log-Out"
+            android:textSize="24sp"
+            app:cornerRadius="0px" />
+
+        <!--        <Button-->
+<!--            android:id="@+id/buttonData"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@+id/buttonCut"-->
+<!--            android:layout_alignLeft="@+id/buttonCut"-->
+<!--            android:layout_alignRight="@+id/buttonCut"-->
+<!--            android:enabled="false"-->
+<!--            android:text="getdata" />-->
+
+<!--        <Button-->
+<!--            android:enabled="false"-->
+<!--            android:id="@+id/buttonCash"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignLeft="@+id/printf"-->
+<!--            android:layout_alignRight="@+id/printf"-->
+<!--            android:layout_below="@+id/printf"-->
+<!--            android:text="@string/OpenCash" />-->
+
+<!--        <Button-->
+<!--            android:enabled="false"-->
+<!--            android:id="@+id/buttonCut"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignLeft="@+id/buttonCash"-->
+<!--            android:layout_alignRight="@+id/buttonCash"-->
+<!--            android:layout_below="@+id/buttonCash"-->
+<!--            android:text="@string/CutPaper" />-->
+
+
+
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
