@@ -1,10 +1,15 @@
 package com.example.devposapp2;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -13,16 +18,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.onesignal.OneSignal;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,8 +46,8 @@ String resId;
     public RequestQueue mQueue;
     private ProgressBar spinner;
     Connection connection = new Connection();
-    VollyRequest vollyRequest;
 
+Context context = LoginActivity.this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +65,7 @@ String resId;
         SharedPreferences.Editor editor = loginInfo.edit();
         resId = loginInfo.getString("resId", "data not found");
         spinner = (ProgressBar)findViewById(R.id.progressBar);
-        vollyRequest = new VollyRequest(LoginActivity.this);
+
         Boolean isChecked = sessionManagement.getIsChecked();
         if(isChecked){
             String emailSes = sessionManagement.getEmail();
@@ -81,6 +90,7 @@ String resId;
                     }
                 });
                 submit.setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
                     @Override
                     public void onClick(View v) {
 
@@ -108,7 +118,9 @@ String resId;
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                                String url = "https://devoretapi.co.uk/api/v1/systemUserLogin";
+                                    RequestQueue queue = MySingleton.getInstance(context).getRequestQueue();
+
+                                            String url = "https://devoretapi.co.uk/api/v1/systemUserLogin";
                                 JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                                         Request.Method.POST, url, js,
                                         new Response.Listener<JSONObject>() {
@@ -117,7 +129,7 @@ String resId;
                                                 int count = 0;
                                                 try {
                                                     String status = response.getString("status");
-
+                                                    String token=null;
                                                     if(response.getString("status").matches("success")){
                                                         String firstName = response.getJSONObject("data").getString("first_name");
                                                         String lastName = response.getJSONObject("data").getString("last_name");
@@ -125,8 +137,9 @@ String resId;
                                                         String mobileNum = response.getJSONObject("data").getString("mobile_no");
                                                         String resId = response.getJSONObject("data").getString("restaurant_id");
                                                         String userRole = response.getJSONObject("data").getString("user_role");
-                                                        String token = response.getString("token");
-
+                                                         token = response.getString("token");
+                                                        Log.d("tokenxxxx", token);
+                                                        Log.d("resId", resId);
                                                         getResInfo(resId);
                                                         editor.putString("status", status);
                                                         editor.putString("firstName", firstName);
@@ -138,6 +151,7 @@ String resId;
                                                         editor.putString("token", token);
                                                         editor.apply();
                                                         Toast.makeText(getApplicationContext(),"Successfully logged in.",Toast.LENGTH_LONG).show();
+                                                        registerDeviceInOnesigNal(token,resId,email);
                                                         sendToMain(null);
                                                         LoginStatus loginStatus = new LoginStatus();
                                                         loginStatus.setLogIn();
@@ -147,24 +161,13 @@ String resId;
                                                     }
 
 
-//                                            if (loginInfo.contains("status")) {
-//
-//                                                Toast.makeText(getApplicationContext(),status,Toast.LENGTH_LONG).show();
-////                                                sendToMain(null);
-//                                            }
-//                                            if(status=="error"){
-//                                                Toast.makeText(getApplicationContext(),response.getString("msg"),Toast.LENGTH_LONG).show();
-//                                            }
-//                                            else{
-//
-//                                            }
-
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
 
 
                                             }
+
                                         }, new Response.ErrorListener() {
 
                                     @Override
@@ -173,10 +176,8 @@ String resId;
                                         Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
 
                                     }
-                                });
-                                vollyRequest.addObjectRequest(jsonObjReq);
-
-
+                                }) ;
+                                    MySingleton.getInstance(context).addToRequestQueue(jsonObjReq);
 
                             }
                             else{
@@ -206,8 +207,81 @@ String resId;
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
+    private void registerDeviceInOnesigNal(String token, String restId, String email) {
+        String deviceId = Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID);
+        OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
+        OneSignal.initWithContext(context);
+
+        OneSignal.setAppId("bf591344-0bdb-475b-97ed-f01dfe90f30d");
+        String uUID = OneSignal.getDeviceState().getUserId();
+        String token2 = OneSignal.getDeviceState().getPushToken();
+
+        if(connection.checkInternetConnection(LoginActivity.this))
+        {
+            JSONObject js = new JSONObject();
+            try {
+                js.put("restaurant_id", restId);
+                js.put("email", email);
+                js.put("player_id", uUID);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            RequestQueue queue = MySingleton.getInstance(context).getRequestQueue();
+
+            String url = "https://devoretapi.co.uk/api/v1/auth/addOneSignalPlayerId";
+            JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                    Request.Method.POST, url, js,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            int count = 0;
+                            try {
+                                String status = response.getString("status");
+
+                                if(response.getString("status").matches("success")){
+                                    Toast.makeText(getApplicationContext(),uUID,Toast.LENGTH_LONG).show();
+                                }
+                                else{
+                                    Toast.makeText(getApplicationContext(),restId+". "+response.getString("msg"),Toast.LENGTH_LONG).show();
+                                }
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
+                        }
+
+                    }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                }
+            }) {
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("player_id", uUID);
+                    headers.put("X-Access-Token", "Bearer "+token);
+                    return headers;
+                }
+            };
+            MySingleton.getInstance(context).addToRequestQueue(jsonObjReq);
+
+        }
+        else{
+            Toast.makeText(getApplicationContext(),"No Internet. PLease check your internet connection.",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
     public void getResInfo(String resId) {
-       vollyRequest = new VollyRequest(LoginActivity.this);
+        RequestQueue queue = MySingleton.getInstance(context).getRequestQueue();
         SharedPreferences resInfo = LoginActivity.this.getSharedPreferences("resInfo", MODE_PRIVATE);
         SharedPreferences.Editor editor = resInfo.edit();
         String url = "https://devoretapi.co.uk/api/v1/printer/getRestInfo/"+ resId;
@@ -273,7 +347,8 @@ String resId;
 
             }
         });
-      vollyRequest.addObjectRequest(jsonObjReq);
+        MySingleton.getInstance(LoginActivity.this).addToRequestQueue(jsonObjReq);
+
     }
 
 
@@ -282,6 +357,25 @@ String resId;
 
         startActivity(intent);
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        super.onBackPressed();
+    }
+    //    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        Intent intent = new Intent(this, MainActivity.class);
+//
+//        startActivity(intent);
+//
+//    }
 //    private View.OnClickListener mClickListener = new View.OnClickListener() {
 //        public void onClick(View v) {
 //        String emailStr = email.getText().toString();

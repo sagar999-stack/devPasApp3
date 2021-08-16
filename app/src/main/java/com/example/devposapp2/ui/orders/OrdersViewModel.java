@@ -31,6 +31,24 @@ public class OrdersViewModel  {
   public boolean printed;
   public  boolean menu;
   public String offerText;
+  public String order_id;
+    public String printingStatus;
+
+    public String getPrintingStatus() {
+        return printingStatus;
+    }
+
+    public void setPrintingStatus(String printingStatus) {
+        this.printingStatus = printingStatus;
+    }
+
+    public String getOrder_id() {
+        return order_id;
+    }
+
+    public void setOrder_id(String order_id) {
+        this.order_id = order_id;
+    }
 
     public String getOrderStatus() {
         return orderStatus;

@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -43,10 +44,11 @@ import com.example.devposapp2.Connection;
 import com.example.devposapp2.LoginActivity;
 import com.example.devposapp2.LoginStatus;
 import com.example.devposapp2.MainActivity;
+import com.example.devposapp2.MySingleton;
 import com.example.devposapp2.R;
 import com.example.devposapp2.Socketmanager;
 import com.example.devposapp2.SpaceManager;
-import com.example.devposapp2.VollyRequest;
+
 import com.example.devposapp2.ui.settings.SettingsFragment;
 
 import org.json.JSONArray;
@@ -89,7 +91,7 @@ public class OrdersFragment extends Fragment {
     public OrdersFragment() {
         // Required empty public constructor
     }
-VollyRequest vollyRequest;
+
     OrdersAdapter myadapter;
 
     List<OrdersViewModel> orders = new ArrayList<>();
@@ -99,11 +101,12 @@ VollyRequest vollyRequest;
     String printerIp;
     String resId;
     TextToSpeech t1;
-    private Button buttonPf=null;
+
     private ProgressBar spinner;
     private TextView noData;
     SwipeRefreshLayout swipeRefreshLayout;
     Connection connection = new Connection();
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         SharedPreferences loginInfo = getContext().getSharedPreferences("loginInfo", getContext().MODE_PRIVATE);
@@ -131,7 +134,7 @@ VollyRequest vollyRequest;
         }else{
             port = Integer.parseInt(portStr);
         }
-
+        noData.setVisibility(View.GONE);
         t1=new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
@@ -151,9 +154,11 @@ VollyRequest vollyRequest;
         }
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
             @Override
             public void onRefresh() {
                 spinner.setVisibility(View.VISIBLE);
+                noData.setVisibility(View.GONE);
                 if(connection.checkInternetConnection(getContext())) {
                     allSettingsAndLoadDataAndPassToAdapter();
                     myadapter.notifyDataSetChanged();
@@ -168,27 +173,7 @@ VollyRequest vollyRequest;
             }
         });
 
-//            Thread thread = new Thread(){
-//                @Override
-//                public  void  run(){
-//                    while (!interrupted()){
-//                        try {
-//                            jsonParseListOfPrintedOrders();
-//
-//                            Thread.sleep(5000);
-//
-//
-//
-//
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            };
-//
-//
-//            thread.start();
+
         return root;
     }
     public void sendToLogin(View view) {
@@ -196,10 +181,12 @@ VollyRequest vollyRequest;
 
         startActivity(intent);
     }
+
+@RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
 public void allSettingsAndLoadDataAndPassToAdapter(){
 
     orders = new ArrayList<>();
-    vollyRequest = new VollyRequest(getContext());
+
     jsonParseListOfPrintedOrders();
     myadapter = new OrdersAdapter(getContext(),orders) ;
     recyclerView.setAdapter(myadapter);
@@ -223,7 +210,9 @@ public void allSettingsAndLoadDataAndPassToAdapter(){
             String offerText,
             String orderId,
             String orderStatus,
-            String discountText)  {
+            String discountText,
+            String order_id,
+            String printingStatus)  {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -248,6 +237,8 @@ public void allSettingsAndLoadDataAndPassToAdapter(){
         ordersViewModel.setOfferText(offerText);
         ordersViewModel.setResId(resId);
         ordersViewModel.setDiscountText(discountText);
+        ordersViewModel.setOrder_id(order_id);
+        ordersViewModel.setPrintingStatus(printingStatus);
 
         orders.add(ordersViewModel);
 
@@ -255,7 +246,9 @@ public void allSettingsAndLoadDataAndPassToAdapter(){
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
     public void jsonParseListOfPrintedOrders() {
+        RequestQueue queue = MySingleton.getInstance(getContext()).getRequestQueue();
         String url = "https://devoretapi.co.uk/api/v1/admin/orders/"+resId+"/today";
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url,null,
                 new com.android.volley.Response.Listener<JSONArray>() {
@@ -282,8 +275,9 @@ public void allSettingsAndLoadDataAndPassToAdapter(){
                                         String address1 = null;
                                         String address2 = null;
                                         String printingStatus = obj.getString("printing_status");
-                                        int printingStatusInt = Integer.parseInt(printingStatus);
+
                                         String orderId = obj.getString("_id");
+                                        String order_Id = obj.getString("order_id");
                                         String orderStatus = obj.getString("order_status");
                                         String firstName = customerInfo.getString("first_name");
                                         String phoneNumber = customerInfo.getString("mobile_no");
@@ -306,9 +300,10 @@ public void allSettingsAndLoadDataAndPassToAdapter(){
                                         String resName = obj.getString("restaurant_name");
                                         String offerText = obj.getString("offer_text");
                                         String discountText = obj.getString("discount_text");
+
                                         boolean printed = false;
 
-                                        data(firstName,phoneNumber,customerAddress,orderDate,orderTime,deliveryTime,orderedItems,subTotal,discount,serviceCharge,deliveryCharge,grandTotal,paymentMethod,order_policy,resName,offerText,orderId,orderStatus,discountText);
+                                        data(firstName,phoneNumber,customerAddress,orderDate,orderTime,deliveryTime,orderedItems,subTotal,discount,serviceCharge,deliveryCharge,grandTotal,paymentMethod,order_policy,resName,offerText,orderId,orderStatus,discountText,order_Id,printingStatus);
 
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -331,6 +326,6 @@ public void allSettingsAndLoadDataAndPassToAdapter(){
             }
         });
 
-        vollyRequest.addArrayRequest(request);
+        MySingleton.getInstance(getContext()).addToRequestQueue(request);
     }
 }

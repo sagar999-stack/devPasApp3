@@ -2,9 +2,13 @@ package com.example.devposapp2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -13,22 +17,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ReservationManager {
-    Context context;
 
-    public ReservationManager(Context context) {
-        this.context = context;
-    }
 
-    public void acceptReservation(String reservationId, String status){
-      VollyRequest vollyRequest = new VollyRequest(context);
+
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
+    public void acceptReservation(String reservationId, String status, String msg, Context context){
+        RequestQueue queue = MySingleton.getInstance(context).getRequestQueue();
 
        JSONObject js = new JSONObject();
        try {
            js.put("_id", reservationId);
            js.put("status", status);
-           js.put("resetvation_date", "");
-           js.put("reservation_time", "");
-           js.put("notes", "test");
+           js.put("message", msg);
 
        } catch (JSONException e) {
            e.printStackTrace();
@@ -41,12 +41,12 @@ public class ReservationManager {
                    public void onResponse(JSONObject response) {
                        int count = 0;
                        try {
-                                    String status = response.getString("status");
+
 
 
                            if(response.getString("status").matches("true")){
 
-
+                               Toast.makeText(context, status, Toast.LENGTH_LONG).show();
 
                            }
 //                                    if(response.length()>1){
@@ -90,6 +90,6 @@ public class ReservationManager {
 
            }
        });
-       vollyRequest.addObjectRequest(jsonObjReq);
+        MySingleton.getInstance(context).addToRequestQueue(jsonObjReq);
     }
 }

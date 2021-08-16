@@ -3,52 +3,27 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.devposapp2.Connection;
-import com.example.devposapp2.LoginStatus;
-import com.example.devposapp2.PinCodeActivity;
-import com.example.devposapp2.Print;
+import com.example.devposapp2.MessageDialog;
 import com.example.devposapp2.R;
-import com.example.devposapp2.RefreshAdapter;
-import com.example.devposapp2.ReservationManager;
-import com.example.devposapp2.ResetPassword;
 import com.example.devposapp2.Socketmanager;
-import com.example.devposapp2.SpaceManager;
-import com.example.devposapp2.VollyRequest;
-import com.example.devposapp2.ui.orders.OrderDetails;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 public class ReservationsAdapter extends RecyclerView.Adapter<ReservationsAdapter.ViewHolder> {
     public Context context ;
@@ -121,10 +96,11 @@ public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return reservations.size();
     }
 
-    public  class  ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener ,PopupMenu.OnMenuItemClickListener{
+    public  class  ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener ,PopupMenu.OnMenuItemClickListener, MessageDialog.ExampleDialogListener{
         TextView firstName,reservationDate,contact,numberOfGuest,email,createdDate,reservationTime;
         CardView view_container;
         ImageView dotMenu,colorBar;
+        private TextView textViewMsg;
         ClipData.Item accept;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -140,7 +116,7 @@ public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             colorBar = itemView.findViewById(R.id.signal);
             itemView.setOnClickListener(this);
             dotMenu = itemView.findViewById(R.id.dotMenu);
-
+            textViewMsg = itemView.findViewById(R.id.edit_msg);
 
         }
 
@@ -192,23 +168,43 @@ public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             switch (item.getItemId()) {
 
                 case R.id.action_popup_edit:
+                    String reservationId = reservations.get(position).getReservationId();
 
-                    ReservationManager reservationManager = new ReservationManager(context);
-                    reservationManager.acceptReservation(reservations.get(position).getReservationId(),"Accepted");
+//                    SharedPreferences sharedPreferences = context.getSharedPreferences("reservationStatusPref", context.MODE_PRIVATE);
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//                    editor.putString("status", "Accepted");
+//                    editor.putString("reservationId", reservationId);
+//                    editor.apply();
 
-                    notifyDataSetChanged();
+                    openDialog("Accepted",reservationId);
 
                     return true;
                 case R.id.action_popup_delete:
-                    int position2 = getAdapterPosition();
-                    ReservationManager reservationManager2 = new ReservationManager(context);
-                    reservationManager2.acceptReservation(reservations.get(position2).getReservationId(),"Declined");
+                    String reservationId2 = reservations.get(position).getReservationId();
+
+//                    SharedPreferences sharedPreferences2 = context.getSharedPreferences("reservationStatusPref", context.MODE_PRIVATE);
+//                    SharedPreferences.Editor editor2 = sharedPreferences2.edit();
+//                    editor2.putString("status", "Declined");
+//                    editor2.putString("reservationId", reservationId2);
+//                    editor2.apply();
+                    openDialog("Declined",reservationId2);
+
+//                    reservationManager2.acceptReservation(reservations.get(position2).getReservationId(),"Declined");
                     return true;
                 default:
                     return false;
             }
         }
+        @Override
+        public void applyTexts(String msg) {
+            textViewMsg.setText(msg);
 
+        }
+
+        public void openDialog(String status, String reservationId) {
+            MessageDialog exampleDialog = new MessageDialog(status,reservationId,"reservation");
+            exampleDialog.show(((FragmentActivity)context).getSupportFragmentManager(), "example dialog");
+        }
         /**
          * This method will be invoked when a menu item is clicked if the item
          * itself did not already handle the event.

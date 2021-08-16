@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +35,7 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.devposapp2.Connection;
 import com.example.devposapp2.LoginActivity;
+import com.example.devposapp2.MySingleton;
 import com.example.devposapp2.R;
 import com.example.devposapp2.Socketmanager;
 import com.example.devposapp2.ui.orders.OrdersAdapter;
@@ -55,7 +57,7 @@ import java.util.Locale;
 public class ReservationFragment extends Fragment {
 
     ReservationsAdapter reservationsAdapter;
-    private RequestQueue mQueue;
+
     List<ReservationsViewModel> reservations = new ArrayList<>();
    public RecyclerView recyclerView;
     public Socketmanager mSockManager;
@@ -66,9 +68,11 @@ public class ReservationFragment extends Fragment {
     private Button buttonPf=null;
     private ProgressBar spinner;
     private TextView noData;
+    private ImageView reservationIcon;
     SwipeRefreshLayout swipeRefreshLayout;
    public View view;
     Connection connection = new Connection();
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         SharedPreferences loginInfo = getContext().getSharedPreferences("loginInfo", getContext().MODE_PRIVATE);
@@ -84,6 +88,7 @@ public class ReservationFragment extends Fragment {
         spinner = (ProgressBar)root.findViewById(R.id.progressBar);
         spinner.setVisibility(View.VISIBLE);
         noData= root.findViewById(R.id.noData);
+        reservationIcon= root.findViewById(R.id.reserIcon);
 
         recyclerView = root.findViewById(R.id.recycleView2);
         swipeRefreshLayout = root.findViewById(R.id.swipeRefresh);
@@ -116,6 +121,7 @@ public class ReservationFragment extends Fragment {
         }
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
             @Override
             public void onRefresh() {
                 spinner.setVisibility(View.VISIBLE);
@@ -162,22 +168,17 @@ public class ReservationFragment extends Fragment {
 
         startActivity(intent);
     }
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
     public void allSettingsAndLoadDataAndPassToAdapter(){
 
         reservations = new ArrayList<>();
-        Cache cache = new DiskBasedCache(getActivity().getCacheDir(), 1024 * 1024); // 1MB cap
-// Set up the network to use HttpURLConnection as the HTTP client.
-        Network network = new BasicNetwork(new HurlStack());
-// Instantiate the RequestQueue with the cache and network.
-        mQueue = new RequestQueue(cache, network);
-        mQueue.start();
         jsonParseListOfPrintedOrders();
         reservationsAdapter = new ReservationsAdapter(getContext(),reservations) ;
         recyclerView.setAdapter(reservationsAdapter);
     }
 
     public void data(
-            String resId,
+            String reservationId,
             String bookingStatus,
            String firstName,
            String phoneNumber,
@@ -192,7 +193,7 @@ public class ReservationFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         ReservationsViewModel reservationsViewModel = new ReservationsViewModel();
-        reservationsViewModel.setReservationId(resId);
+        reservationsViewModel.setReservationId(reservationId);
         reservationsViewModel.setBookingStatus(bookingStatus);
         reservationsViewModel.setFirstName(firstName);
         reservationsViewModel.setPhoneNumber(phoneNumber);
@@ -211,7 +212,12 @@ public class ReservationFragment extends Fragment {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
+
     public void jsonParseListOfPrintedOrders() {
+
+        RequestQueue queue = MySingleton.getInstance(this.getContext()).
+                getRequestQueue();
         String url = "https://devoretapi.co.uk/epos/getReservations/"+resId;
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url,null,
                 new com.android.volley.Response.Listener<JSONArray>() {
@@ -223,10 +229,11 @@ public class ReservationFragment extends Fragment {
                         int count = 0;
                         if(response.length()<1){
                             noData.setVisibility(View.VISIBLE);
-
+                            reservationIcon.setVisibility(View.VISIBLE);
                         }
                         else{
                             noData.setVisibility(View.GONE);
+                            reservationIcon.setVisibility(View.GONE);
                         }
                         if(arrayLength<=response.length()){
                             while (count<response.length()){
@@ -235,14 +242,20 @@ public class ReservationFragment extends Fragment {
                                     try {
                                         JSONObject obj = response.getJSONObject(count);
 
-                                        String _id = obj.getString("_id");
+                                        String _idReservation = obj.getString("_id");
                                         String bookingStatus = obj.getString("status");
                                         String reservationDateTime = obj.getString("reservation_date");
                                         String firstName = obj.getString("first_name");
                                         String phoneNumber = obj.getString("mobile");
                                         String email = obj.getString("email");
                                         String address1 = obj.getString("address1");
-                                        String address2 = obj.getString("address2");
+                                        String address2;
+                                        if(obj.getString("address2").matches("")){
+                                            address2="";
+                                        }
+                                        else{
+                                             address2 = obj.getString("address2");
+                                        }
                                         String postCode = obj.getString("postcode");
                                         String createdDate = obj.getString("created_date");
                                         DateFormat outputFormat = new SimpleDateFormat("MM/yyyy", Locale.US);
@@ -271,7 +284,7 @@ public class ReservationFragment extends Fragment {
 //                                        String discountText = obj.getString("discount_text");
                                         boolean printed = false;
 
-                                        data(_id,bookingStatus,firstName,phoneNumber,customerAddress,email,reservationDate,reservationTime,noOfGuest,createdDateFormatted,updatedAt);
+                                        data(_idReservation,bookingStatus,firstName,phoneNumber,customerAddress,email,reservationDate,reservationTime,noOfGuest,createdDateFormatted,updatedAt);
 
                                     } catch (JSONException | ParseException e) {
                                         e.printStackTrace();
@@ -293,7 +306,8 @@ public class ReservationFragment extends Fragment {
                 error.printStackTrace();
             }
         });
-        mQueue.add(request);
+        MySingleton.getInstance(this.getContext()).addToRequestQueue(request);
+
     }
 
 

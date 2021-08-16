@@ -5,22 +5,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/offWhite"
-    android:gravity="center|center_horizontal"
+    android:gravity="center"
     android:paddingBottom="50dp"
     tools:context=".ui.reservations.ReservationFragment">
 
-    <TextView
-        android:id="@+id/noData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:ems="10"
-        android:gravity="center"
-        android:inputType="textPersonName"
-        android:text="No reservation"
-        android:textSize="24sp"
-        android:textStyle="bold" />
 
+    <LinearLayout
+        android:id="@+id/noDataLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/reserIcon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/booking_date_icon" />
+
+        <TextView
+            android:id="@+id/noData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:ems="10"
+            android:fontFamily="@font/dax"
+            android:gravity="center_horizontal"
+            android:inputType="textPersonName"
+            android:text="No reservation"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
@@ -49,7 +65,7 @@
         android:layout_height="wrap_content"
 
         android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
+        android:layout_centerHorizontal="false"
         android:foregroundGravity="clip_horizontal|center"
         android:progressDrawable="@drawable/circular_loader"
         app:layout_constraintBottom_toTopOf="@+id/swipeRefresh"

@@ -19,22 +19,26 @@ import com.onesignal.OneSignal;
 
 import org.json.JSONObject;
 
-public class Zillion extends Application {
-    private static Context mContext;
+public class MyApplication extends Application {
     private static final String ONESIGNAL_APP_ID = "bf591344-0bdb-475b-97ed-f01dfe90f30d";
 
-    private static Zillion mInstance;
+    private static MyApplication mInstance;
+
+    public MyApplication() {
+        mInstance = this;
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onCreate() {
         super.onCreate();
-        mContext = getApplicationContext();
         mInstance = this;
-        OneSignal.setNotificationOpenedHandler(new Zillion.NotificationHandler(this));
+
+        OneSignal.setNotificationOpenedHandler(new NotificationHandler(this));
         OneSignal.initWithContext(this);
         OneSignal.setAppId(ONESIGNAL_APP_ID);
 
-        // Create an Intent for the activity you want to start
+                // Create an Intent for the activity you want to start
         Intent resultIntent = new Intent(this, ResultActivity.class);
 // Create the TaskStackBuilder and add the intent, which inflates the back stack
         TaskStackBuilder stackBuilder = TaskStackBuilder.
@@ -55,28 +59,27 @@ public class Zillion extends Application {
 
     }
     class NotificationHandler implements OneSignal.OSNotificationOpenedHandler{
-        Context context;
-        public NotificationHandler(Zillion zillion) {
-            context=zillion;
+Context context;
+        public NotificationHandler(MyApplication myApplication) {
+            context=myApplication;
         }
 
         @Override
         public void notificationOpened(OSNotificationOpenedResult result) {
             Log.d("OSNotification", "result.notification.toJSONObject(): " + result.getNotification().toJSONObject());
-            JSONObject data = result.toJSONObject();
-            String dataStr = data.toString();
-            Log.d("OSNotification",dataStr );
+            JSONObject data = result.getNotification().getAdditionalData();
             if (data != null) {
                 String customKey = data.optString("customkey", null);
                 if (customKey != null) {
-                    Log.i("OneSignalExample", "customkey set with value: " + customKey);
+//                    Log.i("", "customkey set with value: " + customKey);
                 }
             }
             OSNotificationAction.ActionType actionType = result.getAction().getType();
             if (actionType == OSNotificationAction.ActionType.ActionTaken) {
-                Log.i("OneSignalExample", "Button pressed with id: " + result.getAction().getActionId());
+//                Log.i("OneSignalExample", "Button pressed with id: " + result.getAction().getActionId());
+
             }
-            Toast.makeText(context,dataStr,Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"clicked#####",Toast.LENGTH_LONG).show();
             Intent intent = new Intent(context, ResultActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
@@ -84,7 +87,7 @@ public class Zillion extends Application {
 
 
     }
-    public static  synchronized Zillion getInstance(){
+    public static  synchronized MyApplication getInstance(){
         return mInstance;
     }
 }

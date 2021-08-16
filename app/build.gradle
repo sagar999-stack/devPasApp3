@@ -1,4 +1,5 @@
 plugins {
+    id 'com.onesignal.androidsdk.onesignal-gradle-plugin'
     id 'com.android.application'
 }
 
@@ -12,8 +13,11 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [
+                onesignal_app_id:'bf591344-0bdb-475b-97ed-f01dfe90f30d',
+                                onesignal_google_project_number:'REMOTE']
     }
 
     buildTypes {
@@ -47,7 +51,22 @@ implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
     implementation 'com.android.support:recyclerview-v7:21.0.0-rc1'
     // For control over item selection of both touch and mouse driven selection
     implementation "androidx.recyclerview:recyclerview-selection:1.1.0"
+    implementation 'androidx.work:work-runtime:2.3.4'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    def work_version = "2.3.4"
+// Kotlin + coroutines
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+
+// optional - RxJava2 support
+    implementation "androidx.work:work-rxjava2:$work_version"
+
+// optional - GCMNetworkManager support
+    implementation "androidx.work:work-gcm:$work_version"
+
+// optional - Test helpers
+    androidTestImplementation "androidx.work:work-testing:$work_version"
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.onesignal:OneSignal:4.0.0'
 }

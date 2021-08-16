@@ -23,11 +23,21 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 startActivity(myintent);
             }
-        },3000);
-
+        },1000);
 
         }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
 //    private void goActivity() {
 //    startActivity(myintent);
 //    }

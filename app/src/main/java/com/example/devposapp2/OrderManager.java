@@ -1,9 +1,13 @@
 package com.example.devposapp2;
 
 import android.content.Context;
+import android.os.Build;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -12,14 +16,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class OrderManager {
-    Context context;
 
-    public OrderManager(Context context) {
-        this.context = context;
+
+    public OrderManager() {
+
     }
 
-    public void acceptOrder(String orderId, String status, String msg){
-        VollyRequest vollyRequest = new VollyRequest(context);
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
+    public void acceptOrder(String orderId, String status, String msg, Context context){
+        RequestQueue queue = MySingleton.getInstance(context).getRequestQueue();
 
         JSONObject js = new JSONObject();
         try {
@@ -32,6 +37,7 @@ public class OrderManager {
             e.printStackTrace();
         }
         String url = "https://devoretapi.co.uk/api/v1/admin/updateOrderStatus";
+        String finalStatus = status;
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.PUT, url, js,
                 new Response.Listener<JSONObject>() {
@@ -39,12 +45,12 @@ public class OrderManager {
                     public void onResponse(JSONObject response) {
                         int count = 0;
                         try {
-                            String status = response.getString("status");
+
 
 
                             if(response.getString("status").matches("true")){
 
-
+                                Toast.makeText(context, finalStatus, Toast.LENGTH_LONG).show();
 
                             }
 //                                    if(response.length()>1){
@@ -88,6 +94,7 @@ public class OrderManager {
 
             }
         });
-        vollyRequest.addObjectRequest(jsonObjReq);
+        MySingleton.getInstance(context).addToRequestQueue(jsonObjReq);
+        orderId = null;status=null;
     }
 }

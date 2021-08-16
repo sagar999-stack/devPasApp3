@@ -38,7 +38,7 @@
 
                     <ImageView
                         android:id="@+id/imageView"
-                        android:layout_width="300dp"
+                        android:layout_width="271dp"
                         android:layout_height="60dp"
                         android:background="@drawable/devoret_logo"
                         android:foregroundGravity="clip_horizontal" />
@@ -48,11 +48,12 @@
                         android:layout_width="match_parent"
 
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:fontFamily="@font/dax"
                         android:gravity="center_horizontal"
                         android:text="LOGIN"
                         android:textColor="@color/offWhite"
-                        android:textSize="30sp"
+                        android:textSize="24sp"
                         android:textStyle="bold"
                         tools:ignore="NotSibling" />
 
@@ -61,11 +62,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
+                        android:layout_marginTop="5dp"
                         android:fontFamily="@font/dax"
                         android:gravity="center_horizontal"
                         android:text="You can manage your restaurant from here, by using your login credentials."
                         android:textColor="@color/offWhite"
-                        android:textSize="24sp"
+                        android:textSize="18sp"
                         tools:ignore="NotSibling" />
 
                 </LinearLayout>
@@ -109,7 +111,7 @@
                             android:fontFamily="@font/dax"
                             android:hint="@string/email"
                             android:inputType="textEmailAddress"
-                            android:textSize="30sp" />
+                            android:textSize="24sp" />
 
                         <EditText
                             android:id="@+id/editTextTextPassword"
@@ -120,7 +122,7 @@
                             android:fontFamily="@font/dax"
                             android:hint="@string/password"
                             android:inputType="textPassword"
-                            android:textSize="30sp" />
+                            android:textSize="24sp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -134,7 +136,7 @@
                                 android:layout_weight="1"
                                 android:fontFamily="@font/dax"
                                 android:text="@string/remember_me"
-                                android:textSize="24sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/forgotPassword"
@@ -145,7 +147,7 @@
                                 android:gravity="right"
                                 android:text="@string/forgot_password"
                                 android:textColor="@color/firoza"
-                                android:textSize="24sp" />
+                                android:textSize="18sp" />
 
                         </LinearLayout>
 
@@ -160,14 +162,6 @@
                             app:backgroundTint="@color/badami"
                             app:cornerRadius="0px" />
 
-                        <TextView
-                            android:id="@+id/textView2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/dax"
-                            android:gravity="center_horizontal"
-                            android:text="I agree to the Devorat T'C by using ROM App"
-                            android:textSize="24sp" />
                     </LinearLayout>
                 </LinearLayout>
 

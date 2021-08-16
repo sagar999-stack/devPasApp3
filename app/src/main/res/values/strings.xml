@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name"> </string>
+    <string name="app_name">Devoret Printer </string>
     <string name="title_orders">Today\'s Orders</string>
     <string name="title_reservations">Today\'s Reservation</string>
     <string name="title_settings">Settings</string>

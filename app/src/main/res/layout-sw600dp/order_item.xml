@@ -29,13 +29,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:weightSum="40">
+                android:weightSum="60">
+
+                <ImageView
+                    android:id="@+id/signalBar"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="30"
+                    android:layout_margin="5dp"
+                    android:layout_weight="40"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -84,7 +90,6 @@
                             android:fontFamily="@font/dax"
 
                             android:gravity="center"
-                            android:textColor="@color/darkGreen"
                             android:textSize="18sp">
 
                         </TextView>
@@ -99,19 +104,19 @@
                     android:layout_centerVertical="false"
 
                     android:layout_gravity="right"
-                    android:layout_weight="10"
+                    android:layout_margin="5dp"
+                    android:layout_weight="18"
                     android:gravity="right">
 
-                    <Button
-                        android:id="@+id/print_button"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
+                    <ImageView
+                        android:id="@+id/print_button_dynamic"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="10dp"
 
                         android:layout_marginRight="10dp"
-                        android:background="@drawable/printer_icon_tablet"
-                        android:padding="5dp"></Button>
+                        android:padding="5dp" />
 
 
                     <ImageView
@@ -119,7 +124,7 @@
                         android:layout_width="46dp"
                         android:layout_height="34dp"
                         android:layout_centerVertical="true"
-                        android:layout_toEndOf="@+id/print_button" />
+                        android:layout_toEndOf="@+id/print_button_dynamic" />
 
 
                 </RelativeLayout>
@@ -130,6 +135,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center|center_horizontal"
 
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/ic_baseline_more_vert_24" />
 

@@ -2,9 +2,13 @@ package com.example.devposapp2;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -15,10 +19,12 @@ import org.json.JSONObject;
 import static android.content.Context.MODE_PRIVATE;
 
 public class ResInfo {
-VollyRequest vollyRequest;
 
+
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
     public void getResInfo(String resId, Context context) {
-vollyRequest = new VollyRequest(context);
+
+        RequestQueue queue = MySingleton.getInstance(context).getRequestQueue();
         SharedPreferences resInfo = context.getSharedPreferences("resInfo", MODE_PRIVATE);
         SharedPreferences.Editor editor = resInfo.edit();
         String url = "https://devoretapi.co.uk/api/v1/printer/getRestInfo/"+ resId;
@@ -84,6 +90,6 @@ vollyRequest = new VollyRequest(context);
 
             }
         });
-        vollyRequest.addObjectRequest(jsonObjReq);
+        MySingleton.getInstance(context).addToRequestQueue(jsonObjReq);
     }
 }

@@ -80,7 +80,7 @@ Connection connection = new Connection();
         String grandTotal = intent.getStringExtra("grandTotall");
         String paymentMethod = intent.getStringExtra("paymentMethod");
         String orderDate = intent.getStringExtra("orderDate");
-        String positionStr = intent.getStringExtra("position");
+        String order_id = intent.getStringExtra("order_id");
 
         String offerText = intent.getStringExtra("offerText");
         String discountText = intent.getStringExtra("discountText");
@@ -148,11 +148,12 @@ Connection connection = new Connection();
 
         JSONArray finalOrderedItems = orderedItems;
         printButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
             @Override
             public void onClick(View v) {
                 if(connection.checkInternetConnection(OrderDetails.this)) {
                     if (connection.conTest(printerIp, port)) {
-                        Print print = new Print(OrderDetails.this, resName, orderDate, orderTime, deliveryTime, finalOrderedItems, subTotal, discount, grandTotal, offerText, printerIp, port, _id, discountText);
+                        Print print = new Print(OrderDetails.this, resName, orderDate, orderTime, deliveryTime, finalOrderedItems, subTotal, discount, grandTotal, offerText, printerIp, port, _id, discountText,order_id);
                         print.PrintOut();
                     } else {
                         Toast.makeText(getApplicationContext(), "printer not connected.", Toast.LENGTH_LONG).show();

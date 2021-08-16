@@ -26,20 +26,34 @@ Socketmanager mSockManager = new Socketmanager() ;
         }
     }
 
-    public boolean PrintfData(byte[]data, int size, int align ) {
-        mSockManager.threadconnectwrite(data,size,align);
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if (mSockManager.getIstate()) {
-            return true;
-        }
-        else {
-            return false;
-        }
+//    public boolean PrintfData(byte[]data, int size, int align ) {
+//        mSockManager.threadconnectwrite(data,size,align);
+//        try {
+//            Thread.sleep(100);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        if (mSockManager.getIstate()) {
+//            return true;
+//        }
+//        else {
+//            return false;
+//        }
+//    }
+public boolean PrintfData(byte[]data, int size, int align ) {
+    mSockManager.threadconnectwrite(data,size,align);
+    try {
+        Thread.sleep(100);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
     }
+    if (mSockManager.getIstate()) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
 
     public boolean checkInternetConnection(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
