@@ -4,11 +4,21 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-public class Connection extends Socketmanager {
-Socketmanager mSockManager = new Socketmanager() ;
+public class Connection  {
+Socketmanager mSockManager = Socketmanager.getInstance() ;
+    private static Connection INSTANCE = null;
+    private static Object mutex = new Object();
+    private Connection() {
 
-
-
+    }
+    public static Connection getInstance() {
+        synchronized (mutex) {
+            if (INSTANCE == null) {
+                INSTANCE = new Connection();
+            }
+        }
+        return(INSTANCE);
+    }
     public boolean conTest(String printerIp, int port) {
         mSockManager.mPort=port;
         mSockManager.mstrIp=printerIp;

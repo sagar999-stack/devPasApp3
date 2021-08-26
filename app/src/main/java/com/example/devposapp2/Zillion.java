@@ -19,7 +19,9 @@ import com.onesignal.OneSignal;
 
 import org.json.JSONObject;
 
-public class Zillion extends Application {
+public class
+
+Zillion extends Application {
     private static Context mContext;
     private static final String ONESIGNAL_APP_ID = "bf591344-0bdb-475b-97ed-f01dfe90f30d";
 
@@ -34,23 +36,23 @@ public class Zillion extends Application {
         OneSignal.initWithContext(this);
         OneSignal.setAppId(ONESIGNAL_APP_ID);
 
-        // Create an Intent for the activity you want to start
-        Intent resultIntent = new Intent(this, ResultActivity.class);
-// Create the TaskStackBuilder and add the intent, which inflates the back stack
-        TaskStackBuilder stackBuilder = TaskStackBuilder.
-                create(this);
-        stackBuilder.addNextIntentWithParentStack(resultIntent);
-// Get the PendingIntent containing the entire back stack
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(
-                this, "1").setSmallIcon(R.drawable.email_icon);
-        builder.setContentIntent(resultPendingIntent);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-        notificationManager.notify(1, builder.build());
+//        // Create an Intent for the activity you want to start
+//        Intent resultIntent = new Intent(this, ResultActivity.class);
+//// Create the TaskStackBuilder and add the intent, which inflates the back stack
+//        TaskStackBuilder stackBuilder = TaskStackBuilder.
+//                create(this);
+//        stackBuilder.addNextIntentWithParentStack(resultIntent);
+//// Get the PendingIntent containing the entire back stack
+//        PendingIntent resultPendingIntent =
+//                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(
+//                this, "1").setSmallIcon(R.drawable.email_icon);
+//        builder.setContentIntent(resultPendingIntent);
+//
+//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+//
+//        notificationManager.notify(1, builder.build());
 
 
     }

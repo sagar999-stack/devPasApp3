@@ -39,7 +39,7 @@ public class OrderDetails extends AppCompatActivity {
     ArrayList<DishDetailsModel> orderedItemsList = new ArrayList<DishDetailsModel>();
     TextView firstName,address_,date_,orderTime_,mobileNumber_,deliveryTime_,subTotal_,discount_,serviceCharge_,deliveryCharge_,grandTotal_,paymentMethod_, number_0f_item,offerText_;
     Button printButton;
-Connection connection = new Connection();
+Connection connection = Connection.getInstance();
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +97,7 @@ Connection connection = new Connection();
         }
 
 
-        String _id = intent.getStringExtra("_id");
+        String _resId = intent.getStringExtra("_id");
         firstName = findViewById(R.id.full_name);
         address_ = findViewById(R.id.address);
         date_ = findViewById(R.id.editTextDate);
@@ -147,13 +147,28 @@ Connection connection = new Connection();
         });
 
         JSONArray finalOrderedItems = orderedItems;
+
         printButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
             @Override
             public void onClick(View v) {
                 if(connection.checkInternetConnection(OrderDetails.this)) {
                     if (connection.conTest(printerIp, port)) {
-                        Print print = new Print(OrderDetails.this, resName, orderDate, orderTime, deliveryTime, finalOrderedItems, subTotal, discount, grandTotal, offerText, printerIp, port, _id, discountText,order_id);
+                        Print print = Print.getInstance(OrderDetails.this);
+                        print.setResName(resName);
+                        print.setOrderDate(orderDate);
+                        print.setOrderTime(orderTime);
+                        print.setDeliveryTime(deliveryTime);
+                        print.setOrderedItems(finalOrderedItems);
+                        print.setSubTotal(subTotal);
+                        print.setDiscount(discount);
+                        print.setGrandTotal(grandTotal);
+                        print.setOfferText(offerText);
+                        print.setPrinterIp(printerIp);
+                        print.setPort(port);
+                        print.setResId(_resId);
+                        print.setDiscountText(discountText);
+                        print.setOrder_id(order_id);
                         print.PrintOut();
                     } else {
                         Toast.makeText(getApplicationContext(), "printer not connected.", Toast.LENGTH_LONG).show();

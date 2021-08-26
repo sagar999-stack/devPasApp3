@@ -21,7 +21,7 @@ import com.android.volley.RequestQueue;
 import com.example.devposapp2.Connection;
 import com.example.devposapp2.MessageDialog;
 import com.example.devposapp2.R;
-import com.example.devposapp2.Socketmanager;
+
 
 import java.util.List;
 
@@ -35,8 +35,8 @@ public class ReservationsAdapter extends RecyclerView.Adapter<ReservationsAdapte
     private RequestQueue mQueue;
     String deliveryOrCollection;
     List<ReservationsViewModel> reservations;
-    Connection connection = new Connection();
-    private Socketmanager mSockManager;
+    Connection connection = Connection.getInstance();
+
     EditText x;
     View view2;
     RecyclerView recyclerView;
@@ -56,7 +56,7 @@ public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     recyclerView = view.findViewById(R.id.recycleView2);
     view2=view;
     ViewHolder viewHolder=new ViewHolder(view);
-    mSockManager=new Socketmanager(parent.getContext());
+
 
     return viewHolder;
 }
@@ -202,7 +202,11 @@ public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         }
 
         public void openDialog(String status, String reservationId) {
-            MessageDialog exampleDialog = new MessageDialog(status,reservationId,"reservation");
+            MessageDialog exampleDialog = MessageDialog.getInstance();
+            exampleDialog.set_id(reservationId);
+            exampleDialog.setStatus(status);
+            exampleDialog.setOrderOrReservation("reservation");
+
             exampleDialog.show(((FragmentActivity)context).getSupportFragmentManager(), "example dialog");
         }
         /**

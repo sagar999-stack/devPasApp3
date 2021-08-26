@@ -72,16 +72,16 @@ public class MainActivity extends AppCompatActivity implements MessageDialog.Exa
     private RequestQueue mQueue;
     List<OrdersViewModel> orders = new ArrayList<>();
 
-    public Socketmanager mSockManager;
+
     int port=9100;
-    SpaceManager spaceManager = new SpaceManager();
+
     String printerIp;
     String resId;
     TextToSpeech t1;
     Thread thread1;
     Thread thread2;
-    SpinnerVigi spinnerVigi = new SpinnerVigi();
-    Connection connection = new Connection();
+
+    Connection connection = Connection.getInstance();
     Boolean audio,threadFlag=true;
     private static final String ONESIGNAL_APP_ID = "bf591344-0bdb-475b-97ed-f01dfe90f30d";
 Zillion zillion;
@@ -155,10 +155,10 @@ String deviceId = Settings.Secure.getString(getContentResolver(),Settings.Secure
         String  portStr= connectionFields.getString("port","data not found");
         NavInflater navInflater = navController.getNavInflater();
         NavGraph graph = navInflater.inflate(R.navigation.mobile_navigation);
-        if(portStr=="data not found"){
+        if(portStr=="data not found" || printerIp=="data not found"){
 
+            sendToSettings(null);
 
-            graph.setStartDestination(R.id.navigation_settings);
         }else{
             port = Integer.parseInt(portStr);
         }
@@ -174,22 +174,23 @@ String deviceId = Settings.Secure.getString(getContentResolver(),Settings.Secure
             sendToLogin(null);
         }else{
 
-            Constraints constraints = new Constraints.Builder()
-                    .setRequiresBatteryNotLow(true)
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .setRequiresCharging(true)
-                    .setRequiresStorageNotLow(true)
-                    .build();
+//            Constraints constraints = new Constraints.Builder()
+//                    .setRequiresBatteryNotLow(true)
+//                    .setRequiredNetworkType(NetworkType.CONNECTED)
+//                    .setRequiresCharging(true)
+//                    .setRequiresStorageNotLow(true)
+//                    .build();
+//
+//            PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(
+//                    MyPeriodicWork.class, 15, TimeUnit.MINUTES)
+//                    .setConstraints(constraints)
+//                    .build();
+//
+//            WorkManager.getInstance(this).enqueue(periodicWorkRequest);
 
-            PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(
-                    MyPeriodicWork.class, 15, TimeUnit.MINUTES)
-                    .setConstraints(constraints)
-                    .build();
 
-            WorkManager.getInstance(this).enqueue(periodicWorkRequest);
-
-
-
+            Intent intent = new Intent(getApplicationContext(), UpdateService.class);
+            MainActivity.this.startService(intent);
 
 
 //
@@ -241,6 +242,12 @@ String deviceId = Settings.Secure.getString(getContentResolver(),Settings.Secure
         }
 
 
+    }
+
+    private void sendToSettings(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+
+        startActivity(intent);
     }
 
     public void sendToLogin(View view) {

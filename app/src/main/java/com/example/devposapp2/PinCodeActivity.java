@@ -66,7 +66,7 @@ public class PinCodeActivity extends AppCompatActivity {
                                         String token = response.getString("token");
                                         SharedPreferences loginInfo = PinCodeActivity.this.getSharedPreferences("loginInfo", MODE_PRIVATE);
                                         SharedPreferences.Editor editor = loginInfo.edit();
-                                        ResInfo resInfo = new ResInfo();
+                                        ResInfo resInfo = ResInfo.getInstance();
                                         resInfo.getResInfo(resId,PinCodeActivity.this);
                                         editor.putString("status", status);
                                         editor.putString("firstName", firstName);

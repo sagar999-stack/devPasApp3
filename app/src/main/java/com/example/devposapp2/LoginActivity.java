@@ -45,7 +45,7 @@ String resId;
     String passwordStr;
     public RequestQueue mQueue;
     private ProgressBar spinner;
-    Connection connection = new Connection();
+    Connection connection = Connection.getInstance();
 
 Context context = LoginActivity.this;
     @Override
@@ -58,7 +58,8 @@ Context context = LoginActivity.this;
         forgetPassword = (TextView) findViewById(R.id.forgotPassword);
         submit= (Button) findViewById(R.id.submitButtonVerification);
         emailStr=null;
-        SessionManagement sessionManagement = new SessionManagement(LoginActivity.this);
+        SessionManagement sessionManagement = SessionManagement.getInstance(LoginActivity.this);
+
         String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+(?:\\.[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";       passwordStr=null;
 
         SharedPreferences loginInfo = LoginActivity.this.getSharedPreferences("loginInfo", MODE_PRIVATE);
@@ -353,7 +354,7 @@ Context context = LoginActivity.this;
 
 
     public void sendToMain(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, WelcomeActivity.class);
 
         startActivity(intent);
     }

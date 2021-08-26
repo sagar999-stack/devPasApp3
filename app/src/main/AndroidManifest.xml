@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.devposapp2">
 
-    <uses-sdk
-
-        android:targetSdkVersion="14" />
+    <uses-sdk android:targetSdkVersion="14" />
 
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -14,10 +12,13 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission
-        android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
-
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.HAVE_FULL_NETWORK_ACCESS" />
+    <uses-permission android:name="android.permission.READ_BADGE_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
+        android:name=".Zillion"
         android:allowBackup="true"
         android:hardwareAccelerated="false"
         android:icon="@drawable/icon"
@@ -26,14 +27,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DevPosApp2"
-        android:name=".Zillion"
         tools:targetApi="honeycomb">
+        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".WelcomeActivity" />
+
         <service
             android:name=".UpdateService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
 
         <activity android:name=".PinCodeActivity" />
         <activity android:name=".ResetPassword" />
@@ -48,31 +50,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" android:noHistory="true"/>
+        <activity
+            android:name=".LoginActivity"
+            android:noHistory="true" />
         <activity android:name=".ui.orders.OrderDetails" />
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTop"
             android:label="@string/app_name"
-         />
+            android:launchMode="singleTop" />
         <activity
             android:name=".ResultActivity"
+            android:excludeFromRecents="true"
             android:parentActivityName=".MainActivity"
-            android:taskAffinity=""
-            android:excludeFromRecents="true"/>
-        ...
+            android:taskAffinity="" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
-
-        <meta-data android:name="com.onesignal.NotificationServiceExtension"
+        <meta-data
+            android:name="com.onesignal.NotificationServiceExtension"
             android:value="com.company.NotificationServiceExtension" />
-
-
+        <receiver android:name="MyBroadcastReceiver" >
+        </receiver>
     </application>
-
-
 
 </manifest>

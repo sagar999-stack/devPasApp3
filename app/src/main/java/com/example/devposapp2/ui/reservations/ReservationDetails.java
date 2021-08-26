@@ -38,7 +38,7 @@ public class ReservationDetails extends AppCompatActivity {
     ArrayList<DishDetailsModel> orderedItemsList = new ArrayList<DishDetailsModel>();
     TextView status_,bookingDate_,customerName_,email_,phone_,bookingTime_,numberOfGuest_,createdDate_;
     Button printButton;
-    Connection connection = new Connection();
+
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -32,7 +32,7 @@ public class AutoPrint {
     private static AutoPrint INSTANCE = null;
     private static Object mutex = new Object();
     UpdateService updateService = new UpdateService();
-    Connection connection = new Connection();
+    Connection connection = Connection.getInstance();
     private AutoPrint(Context context) {
         this.context = context;
     }
@@ -100,7 +100,7 @@ SharedPreferences.Editor editor;
                                 JSONObject customerInfo = obj.getJSONObject("customer_info");
                                 String printingStatus = obj.getString("printing_status");
                                 int printingStatusInt = Integer.parseInt(printingStatus);
-                                String _id = obj.getString("_id");
+                                String _resId = obj.getString("_id");
                                 String order_id = obj.getString("order_id");
                                 String firstName = customerInfo.getString("first_name");
 
@@ -127,11 +127,24 @@ SharedPreferences.Editor editor;
                                 boolean printed = false;
 
                                 RequestQueue queue = MySingleton.getInstance(context).getRequestQueue();
+                                Print print = Print.getInstance(context);
+                                print.setResName(resName);
+                                print.setOrderDate(orderDate);
+                                print.setOrderTime(orderTime);
+                                print.setDeliveryTime(deliveryTime);
+                                print.setOrderedItems(orderedItems);
+                                print.setSubTotal(subTotal);
+                                print.setDiscount(discount);
+                                print.setGrandTotal(grandTotal);
+                                print.setOfferText(offerText);
+                                print.setPrinterIp(printerIp);
+                                print.setPort(port);
+                                print.setResId(_resId);
+                                print.setDiscountText(discountText);
+                                print.setOrder_id(order_id);
 
 
-if(printingStatus.matches("0")){}
 
-                                    Print print = new Print(context, resName, orderDate, orderTime, deliveryTime, orderedItems, subTotal, discount, grandTotal, offerText, printerIp, port, _id, discountText, order_id);
                                     if (print.PrintOut()) {
                                         if(count+1<response.length()){
                                             updatedFlag(false);
@@ -143,7 +156,7 @@ if(printingStatus.matches("0")){}
                                         }
                                         if(connection.checkInternetConnection(context)) {
 
-                                            updateStatus(_id);
+                                            updateStatus(_resId);
                                         }
                                         else
                                         {
@@ -172,7 +185,8 @@ if(printingStatus.matches("0")){}
                                         if (audio) {
 
                                             String msg = "You have " + numOfOrdersStr + " new order. ";
-                                            AudioManager audioManager = new AudioManager(context);
+
+                                            AudioManager audioManager = AudioManager.getInstance(context);
                                             audioManager.speak(msg);
                                         }
 

@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.Formatter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 
 public class Socketmanager
@@ -25,6 +26,10 @@ public class Socketmanager
     public  int mPort=9100;
 
     int TimeOut=1300;
+//    SharedPreferences connectionFields1 = c.getSharedPreferences("connectionFields", getApplicationContext().MODE_PRIVATE);
+//    printerIp = connectionFields1.getString("ipAddress", "data not found");
+//    String portStr1 = connectionFields1.getString("port", "data not found");
+
     public boolean getIstate () {
         return iState;
     }
@@ -177,13 +182,19 @@ public class Socketmanager
         }
     }
 
+    private static Socketmanager INSTANCE = null;
+    private static Object mutex = new Object();
 
-    public Socketmanager(Context context)
-    {
+    public static Socketmanager getInstance() {
+        synchronized (mutex) {
+            if (INSTANCE == null) {
+                INSTANCE = new Socketmanager();
+            }
+        }
+        return(INSTANCE);
     }
-    public Socketmanager()
-    {
-    }
+
+
     public void SetState(Boolean state)
     {
         iState=state;

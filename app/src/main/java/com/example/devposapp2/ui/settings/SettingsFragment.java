@@ -79,9 +79,9 @@ public class SettingsFragment extends Fragment {
     private EditText mTextPort=null;
     private EditText mprintfData=null;
     private EditText mprintfLog=null;
-    private Socketmanager mSockManager;
+    private Socketmanager mSockManager = Socketmanager.getInstance();
     private String mydata = null;
-Connection connection = new Connection();
+Connection connection = Connection.getInstance();
     private Button click=null;
     private TextView data=null;
     private RequestQueue mQueue;
@@ -115,7 +115,7 @@ int port ;
 //        buttonPf.setOnClickListener(buttonListener);
 //        buttonCash.setOnClickListener(buttonListener);
 //        buttonCut.setOnClickListener(buttonListener);
-        mSockManager=new Socketmanager(getContext());
+
 
 //        click = root. findViewById(R.id.buttonData);
 //        data = root.findViewById(R.id.fetcheddata);

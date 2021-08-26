@@ -1,5 +1,7 @@
 package com.example.devposapp2;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -23,6 +26,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 
 import org.json.JSONArray;
 
+import java.util.Calendar;
 import java.util.Locale;
 
 import static java.lang.Thread.interrupted;
@@ -32,26 +36,21 @@ public class UpdateService extends Service implements TextToSpeech.OnInitListene
     String printerIp,resId;
     private boolean isInit;
     Integer port ;
-    Connection connection = new Connection();
+    Connection connection = Connection.getInstance();
    public Boolean threadFlag = true;
     private TextToSpeech tts;
     int statusLocal;
-
+    private PendingIntent alarmIntent;
+    private AlarmManager alarmMgr;
+    private int countAlarm=0;
+    private int countAlarmNoInternet=0;
+private Boolean connectionAlertFlag;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            Intent intent = new Intent();
-//            String packageName = getPackageName();
-//            PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-//            if (!pm.isIgnoringBatteryOptimizations(packageName)) {
-//                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-//                intent.setData(Uri.parse("package:" + packageName));
-//                startActivity(intent);
-//            }
-//        }
+        alarmManagerForAwakeDevice();
         if (statusLocal == TextToSpeech.SUCCESS) {
             tts = new TextToSpeech(getApplicationContext(), this);
             int result =  tts.setLanguage(Locale.UK);
@@ -92,31 +91,35 @@ public class UpdateService extends Service implements TextToSpeech.OnInitListene
 //                                        }
                                     port = Integer.parseInt(portStr1);
                                     if (connection.checkInternetConnection(getApplicationContext())) {
+                                        countAlarmNoInternet=0;
                                         if (connection.conTest(printerIp, port)) {
+                                           countAlarm =0;
                                             if (autoPrint.getIsUpdated()) {
                                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
 
                                                     autoPrint.jsonParseAutoPrint(resId, printerIp, port);
                                                 }
                                             }
-
-
                                         } else {
 
-                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-                                                getNotificationWhenNotConnected(resId);
+                                            if(countAlarm<5){
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+                                                    getNotificationWhenNotConnected(resId);
+                                                }
                                             }
-
-
+                                            countAlarm++;
                                         }
                                     } else {
-                                        SharedPreferences AudioNotification = getApplicationContext().getSharedPreferences("AudioNotification", getApplicationContext().MODE_PRIVATE);
+                                        if(countAlarmNoInternet<5){
 
-
-                                        Boolean audio = AudioNotification.getBoolean("audio", false);
-                                        if (audio) {
-                                            tts.speak("No Internet. Please check you internet connection.", TextToSpeech.QUEUE_FLUSH, null);
+                                            SharedPreferences AudioNotification = getApplicationContext().getSharedPreferences("AudioNotification", getApplicationContext().MODE_PRIVATE);
+                                            Boolean audio = AudioNotification.getBoolean("audio", false);
+                                            if (audio)
+                                            {
+                                                tts.speak("No Internet. Please check you internet connection.", TextToSpeech.QUEUE_FLUSH, null);
+                                            }
                                         }
+                                 countAlarmNoInternet++;
                                     }
                                 }
 
@@ -144,6 +147,30 @@ public class UpdateService extends Service implements TextToSpeech.OnInitListene
 
     }
 
+    private void alarmManagerForAwakeDevice() {
+        alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent2 = new Intent(getApplicationContext(), MyBroadcastReceiver.class);
+        alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent2, 0);
+
+// Set the alarm to start at 8:30 a.m.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 17);
+        calendar.set(Calendar.MINUTE, 35);
+
+// setRepeating() lets you specify a precise custom interval--in this case,
+// 20 minutes.
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                1000 * 60 * 10, alarmIntent);
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                "MyApp::MyWakelockTag");
+        PowerManager powerManager2 = (PowerManager) getSystemService(POWER_SERVICE);
+        PowerManager.WakeLock wakeLock2 = powerManager2.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                "MyApp::MyWakelockTag");
+        wakeLock2.acquire();
+    }
+
     public UpdateService() {
 
     }
@@ -164,9 +191,6 @@ public class UpdateService extends Service implements TextToSpeech.OnInitListene
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
-
-
-
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
     public void getNotificationWhenNotConnected(String resId) {

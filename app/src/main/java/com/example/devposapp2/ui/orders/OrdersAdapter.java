@@ -29,8 +29,8 @@ import com.example.devposapp2.Connection;
 import com.example.devposapp2.MessageDialog;
 import com.example.devposapp2.Print;
 import com.example.devposapp2.R;
-import com.example.devposapp2.Socketmanager;
-import com.example.devposapp2.SpaceManager;
+
+
 
 
 import org.json.JSONArray;
@@ -51,10 +51,10 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.ViewHolder
     String deliveryOrCollection;
     List<OrdersViewModel> orders;
     RequestQueue queue;
-    Connection connection = new Connection();
-    private Socketmanager mSockManager;
+    Connection connection = Connection.getInstance();
+
     EditText x;
-    SpaceManager spaceManager = new SpaceManager();
+
 
     ArrayList<DishDetailsModel> orderedItemsList = new ArrayList<>();
     public OrdersAdapter(Context mContext, List<OrdersViewModel> orders) {
@@ -75,7 +75,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.ViewHolder
 
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.order_item,parent,false);
         ViewHolder viewHolder=new ViewHolder(view);
-        mSockManager=new Socketmanager(parent.getContext());
+
         SharedPreferences connectionFields = parent.getContext().getSharedPreferences("connectionFields",parent.getContext().MODE_PRIVATE);
 
 
@@ -324,7 +324,12 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.ViewHolder
         }
 
         public void openDialog(String status, String orderId) {
-            MessageDialog exampleDialog = new MessageDialog(status, orderId,"order");
+            MessageDialog exampleDialog = MessageDialog.getInstance();
+            exampleDialog.set_id(orderId);
+            exampleDialog.setStatus(status);
+            exampleDialog.setContext(context);
+            exampleDialog.setOrderOrReservation("order");
+
             exampleDialog.show(((FragmentActivity)context).getSupportFragmentManager(), "example dialog");
         }
         /**
@@ -367,7 +372,21 @@ public void print(int position){
     String order_id = orders.get(position).getOrder_id();
     String orderId = orders.get(position).getOrderId();
 
-    Print print = new Print( context,resName, orderDate, orderTime, deliveryTime, orderedItems, subTotal, discount, grandTotal,offerText, printerIp,port,resId,discountText, order_id);
+    Print print = Print.getInstance(context);
+    print.setResName(resName);
+    print.setOrderDate(orderDate);
+    print.setOrderTime(orderTime);
+    print.setDeliveryTime(deliveryTime);
+    print.setOrderedItems(orderedItems);
+    print.setSubTotal(subTotal);
+    print.setDiscount(discount);
+    print.setGrandTotal(grandTotal);
+    print.setOfferText(offerText);
+    print.setPrinterIp(printerIp);
+    print.setPort(port);
+    print.setResId(resId);
+    print.setDiscountText(discountText);
+    print.setOrder_id(order_id);
 
     if (print.PrintOut()) {
         AutoPrint autoPrint = AutoPrint.getInstance(context);

@@ -12,17 +12,26 @@ public class MyPeriodicWork extends Worker {
 
     private static final String TAG = "time ";
 Context context;
-    public MyPeriodicWork(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+    private static MyPeriodicWork INSTANCE = null;
+    private static Object mutex = new Object();
+    private MyPeriodicWork(@NonNull Context context, @NonNull WorkerParameters workerParams) {
 
         super(context, workerParams);
         this.context=context;
     }
-
+    public static MyPeriodicWork getInstance(Context context,WorkerParameters workerParams) {
+        synchronized (mutex) {
+            if (INSTANCE == null) {
+                INSTANCE = new MyPeriodicWork(context,workerParams);
+            }
+        }
+        return(INSTANCE);
+    }
     @NonNull
     @Override
     public Result doWork() {
-        Intent intent = new Intent(getApplicationContext(), UpdateService.class);
-        context.startService(intent);
+//        Intent intent = new Intent(getApplicationContext(), UpdateService.class);
+//        context.startService(intent);
         Log.d(TAG, "doWork: Work is done.");
         return Result.success();
     }

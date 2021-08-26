@@ -29,26 +29,151 @@ import org.json.JSONObject;
 import java.nio.charset.Charset;
 
 public class Print {
-Connection connection = new Connection();
-SpaceManager spaceManager = new SpaceManager();
+    private static Print INSTANCE = null;
+    private static Object mutex = new Object();
+Connection connection = Connection.getInstance();
+SpaceManager spaceManager = SpaceManager.getInstance();
   Context context; String resName; String orderDate; String orderTime; String deliveryTime; JSONArray orderedItems; String subTotal; String discount; String grandTotal; String offerText; String printerIp; int port; String resId;String discountText ;String order_id
 ;
-    public Print(Context mContext, String resName, String orderDate, String orderTime, String deliveryTime, JSONArray orderedItems, String subTotal, String discount, String grandTotal, String offerText, String printerIp, int port, String _id,String discountText, String order_id) {
-        this.context= mContext;
+
+    public String getResName() {
+        return resName;
+    }
+
+    public void setResName(String resName) {
         this.resName = resName;
+    }
+
+    public String getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(String orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public String getOrderTime() {
+        return orderTime;
+    }
+
+    public void setOrderTime(String orderTime) {
         this.orderTime = orderTime;
+    }
+
+    public String getDeliveryTime() {
+        return deliveryTime;
+    }
+
+    public void setDeliveryTime(String deliveryTime) {
         this.deliveryTime = deliveryTime;
+    }
+
+    public JSONArray getOrderedItems() {
+        return orderedItems;
+    }
+
+    public void setOrderedItems(JSONArray orderedItems) {
         this.orderedItems = orderedItems;
+    }
+
+    public String getSubTotal() {
+        return subTotal;
+    }
+
+    public void setSubTotal(String subTotal) {
         this.subTotal = subTotal;
+    }
+
+    public String getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(String discount) {
         this.discount = discount;
+    }
+
+    public String getGrandTotal() {
+        return grandTotal;
+    }
+
+    public void setGrandTotal(String grandTotal) {
         this.grandTotal = grandTotal;
+    }
+
+    public String getOfferText() {
+        return offerText;
+    }
+
+    public void setOfferText(String offerText) {
         this.offerText = offerText;
+    }
+
+    public String getPrinterIp() {
+        return printerIp;
+    }
+
+    public void setPrinterIp(String printerIp) {
         this.printerIp = printerIp;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
         this.port = port;
-        this.resId = _id;
-        this.discountText=discountText;
-        this.order_id=order_id;
+    }
+
+    public String getResId() {
+        return resId;
+    }
+
+    public void setResId(String resId) {
+        this.resId = resId;
+    }
+
+    public void setDiscountText(String discountText) {
+        this.discountText = discountText;
+    }
+
+    public String getOrder_id() {
+        return order_id;
+    }
+
+    public void setOrder_id(String order_id) {
+        this.order_id = order_id;
+    }
+
+    private Print(Context context) {
+        this.context = context;
+    }
+//
+//    private Print(Context mContext, String resName, String orderDate, String orderTime, String deliveryTime, JSONArray orderedItems, String subTotal, String discount, String grandTotal, String offerText, String printerIp, int port, String _id,String discountText, String order_id) {
+////        this.context= mContext;
+////        this.resName = resName;
+////        this.orderDate = orderDate;
+////        this.orderTime = orderTime;
+////        this.deliveryTime = deliveryTime;
+////        this.orderedItems = orderedItems;
+////        this.subTotal = subTotal;
+////        this.discount = discount;
+////        this.grandTotal = grandTotal;
+////        this.offerText = offerText;
+////        this.printerIp = printerIp;
+////        this.port = port;
+////        this.resId = _id;
+////        this.discountText=discountText;
+////        this.order_id=order_id;
+//    }
+
+
+    public static Print getInstance(Context context) {
+        synchronized (mutex) {
+            if (INSTANCE == null) {
+                INSTANCE = new Print(context);
+            }
+        }
+        return(INSTANCE);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)

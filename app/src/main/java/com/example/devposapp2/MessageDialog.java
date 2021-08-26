@@ -12,22 +12,61 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 public class MessageDialog  extends AppCompatDialogFragment {
     private EditText editMsg;
-String status ,id, orderOrReservation;
-Context context;
+    String status ,_id, orderOrReservation;
+    Context context;
     private ExampleDialogListener listener;
-
-    public MessageDialog(String status , String reservationId , String orderOrReservation ) {
-
-this.status = status;
-this.id = reservationId;
-this.orderOrReservation = orderOrReservation;
+    private static MessageDialog INSTANCE = null;
+    private static Object mutex = new Object();
+    public String getStatus() {
+        return status;
     }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+    public String getOrderOrReservation() {
+        return orderOrReservation;
+    }
+
+    public void setOrderOrReservation(String orderOrReservation) {
+        this.orderOrReservation = orderOrReservation;
+    }
+
+    @Nullable
+    @Override
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+    private MessageDialog() {
+
+    }
+    public static MessageDialog getInstance() {
+        synchronized (mutex) {
+            if (INSTANCE == null) {
+                INSTANCE = new MessageDialog();
+            }
+        }
+        return(INSTANCE);
+    }
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -52,16 +91,13 @@ this.orderOrReservation = orderOrReservation;
 //                     String status = reservationStatusPref.getString("status","data not found");
 //                     String reservationId = reservationStatusPref.getString("reservationId","data not found");
                     if(orderOrReservation.matches("reservation")){
-                        ReservationManager reservationManager2 = new ReservationManager();
-                        reservationManager2.acceptReservation(id,status,editMsg.getText().toString(),getContext());
+                        ReservationManager reservationManager2 = ReservationManager.getInstance();
+                        reservationManager2.acceptReservation(_id,status,editMsg.getText().toString(),context);
                     }
                        else if(orderOrReservation.matches("order")){
-                        OrderManager orderManager = new OrderManager();
-                        orderManager.acceptOrder(id,status,editMsg.getText().toString(),getContext());
+                        OrderManager orderManager = OrderManager.getInstance();
+                        orderManager.acceptOrder(_id,status,editMsg.getText().toString(),context);
                         }
-
-
-
                     }
                 });
 

@@ -1,6 +1,19 @@
 package com.example.devposapp2;
 
 public class SpaceManager {
+    private static SpaceManager INSTANCE = null;
+    private static Object mutex = new Object();
+    private SpaceManager() {
+
+    }
+    public static SpaceManager getInstance() {
+        synchronized (mutex) {
+            if (INSTANCE == null) {
+                INSTANCE = new SpaceManager();
+            }
+        }
+        return(INSTANCE);
+    }
     public String getSpace(String firstText, String lastText,String total){
 
 

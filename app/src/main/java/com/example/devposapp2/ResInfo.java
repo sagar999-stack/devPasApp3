@@ -20,7 +20,20 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class ResInfo {
 
+    private static ResInfo INSTANCE = null;
+    private static Object mutex = new Object();
 
+    private ResInfo() {
+
+    }
+    public static ResInfo getInstance() {
+        synchronized (mutex) {
+            if (INSTANCE == null) {
+                INSTANCE = new ResInfo();
+            }
+        }
+        return(INSTANCE);
+    }
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
     public void getResInfo(String resId, Context context) {
 

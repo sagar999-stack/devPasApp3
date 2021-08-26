@@ -1,5 +1,6 @@
 package com.example.devposapp2;
 
+import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 import android.widget.Toast;
@@ -15,15 +16,26 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class OrderManager {
+public class OrderManager extends Application {
+    private static OrderManager INSTANCE = null;
+    private static Object mutex = new Object();
+    Context context;
 
+    private OrderManager() {
 
-    public OrderManager() {
-
+    }
+    public static OrderManager getInstance() {
+        synchronized (mutex) {
+            if (INSTANCE == null) {
+                INSTANCE = new OrderManager();
+            }
+        }
+        return(INSTANCE);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
     public void acceptOrder(String orderId, String status, String msg, Context context){
+        this.context = context;
         RequestQueue queue = MySingleton.getInstance(context).getRequestQueue();
 
         JSONObject js = new JSONObject();

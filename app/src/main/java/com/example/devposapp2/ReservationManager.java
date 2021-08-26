@@ -18,7 +18,20 @@ import org.json.JSONObject;
 
 public class ReservationManager {
 
+    private static ReservationManager INSTANCE = null;
+    private static Object mutex = new Object();
 
+    private ReservationManager() {
+
+    }
+    public static ReservationManager getInstance() {
+        synchronized (mutex) {
+            if (INSTANCE == null) {
+                INSTANCE = new ReservationManager();
+            }
+        }
+        return(INSTANCE);
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
     public void acceptReservation(String reservationId, String status, String msg, Context context){

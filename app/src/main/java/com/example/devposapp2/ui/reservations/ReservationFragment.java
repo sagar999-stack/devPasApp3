@@ -37,7 +37,7 @@ import com.example.devposapp2.Connection;
 import com.example.devposapp2.LoginActivity;
 import com.example.devposapp2.MySingleton;
 import com.example.devposapp2.R;
-import com.example.devposapp2.Socketmanager;
+
 import com.example.devposapp2.ui.orders.OrdersAdapter;
 import com.example.devposapp2.ui.orders.OrdersViewModel;
 
@@ -60,7 +60,7 @@ public class ReservationFragment extends Fragment {
 
     List<ReservationsViewModel> reservations = new ArrayList<>();
    public RecyclerView recyclerView;
-    public Socketmanager mSockManager;
+
     int port=9100;
     String printerIp;
     String resId;
@@ -71,7 +71,7 @@ public class ReservationFragment extends Fragment {
     private ImageView reservationIcon;
     SwipeRefreshLayout swipeRefreshLayout;
    public View view;
-    Connection connection = new Connection();
+    Connection connection = Connection.getInstance();
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -92,7 +92,7 @@ public class ReservationFragment extends Fragment {
 
         recyclerView = root.findViewById(R.id.recycleView2);
         swipeRefreshLayout = root.findViewById(R.id.swipeRefresh);
-        mSockManager=new Socketmanager(getContext());
+
         SharedPreferences connectionFields = getContext().getSharedPreferences("connectionFields",getContext().MODE_PRIVATE);
         printerIp= connectionFields.getString("ipAddress","data not found");
         String  portStr= connectionFields.getString("port","data not found");
